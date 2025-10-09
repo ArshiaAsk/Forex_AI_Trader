@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 
 
-def fetch_yahoo(symbol, interval='15m', period='60d'):
+def fetch_yahoo(symbol, interval='1h', period='730d'):
     
     # download data
     df = yf.download(symbol, interval=interval, period=period)
@@ -31,15 +31,15 @@ def fetch_yahoo(symbol, interval='15m', period='60d'):
     return df
 
 
-def save_to_db(symbol, df, db_name='forex_data.db'):
+def save_to_db(symbol, df, db_name='forex_data.db', postfix='_1h'):
     conn = sqlite3.connect(db_name)
-    table_name = symbol.replace("=", "_").replace("/", "_")
+    table_name = symbol.replace("=", "_").replace("/", "_") + postfix
     df.to_sql(table_name, conn, if_exists="replace", index=False)
     conn.close()
     
     
 if __name__ == "__main__":
-    eur_usd = fetch_yahoo("EURUSD=X", interval="15m", period="60d")
-    save_to_db("EURUSD=X", eur_usd)
+    eur_usd_1h = fetch_yahoo("EURUSD=X", interval="1h", period="730d")
+    save_to_db("EURUSD=X", eur_usd_1h)
     print("Data fetch & save in DB form YahooFinance")
 

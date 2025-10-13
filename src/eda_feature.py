@@ -5,9 +5,9 @@ import ta
 
 DB_NAME = 'forex_data.db'
 
-def load_data(symbol, interval='15m'):
+def load_data(symbol, interval='1h', fixpost='_1h'):
     conn = sqlite3.connect(DB_NAME)
-    table_name = symbol.replace("=", "_").replace("/", "_")
+    table_name = symbol.replace("=", "_").replace("/", "_") + fixpost
     df = pd.read_sql(f"SELECT * FROM '{table_name}'", conn)
     conn.close()
     
@@ -42,7 +42,7 @@ def plot_price_with_indicators(df, symbol):
     plt.show()
     
     
-def save_features(df, symbol, interval='15m'):
+def save_features(df, symbol, interval='1h'):
     conn = sqlite3.connect(DB_NAME)
     table_name = f"{symbol.replace("=", "_").replace("/", "_")}_features_{interval}"
     df.to_sql(table_name, conn, if_exists="replace", index=False)
@@ -52,7 +52,7 @@ def save_features(df, symbol, interval='15m'):
     
 if __name__ == "__main__":
     symbol = "EURUSD=X"
-    interval = "15m"
+    interval = "1h"
     
     df = load_data(symbol, interval)
     print(f"Data loaded: {len(df)} rows")

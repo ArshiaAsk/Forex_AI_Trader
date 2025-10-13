@@ -3,11 +3,11 @@ import pandas as pd
 import backtrader as bt
 
 DB_NAME = 'forex_data.db'
+TABLE_NAME = 'EURUSD_X'
 
-def load_data(symbol):
+def load_data():
     conn = sqlite3.connect(DB_NAME)
-    table_name = symbol.replace("=", "_").replace("/", "_")
-    df = pd.read_sql(f"SELECT * FROM {table_name}", conn)
+    df = pd.read_sql(f"SELECT * FROM {TABLE_NAME}", conn)
     conn.close()
     
     df['Datetime'] = pd.to_datetime(df['Datetime'])
@@ -45,8 +45,7 @@ class SMAvsEMA(bt.Strategy):
             
     
 if __name__ == "__main__":
-    symbol = "EURUSD=X"
-    df = load_data(symbol)
+    df = load_data()
     
     # conver data to Backtrader compatible DataFeed
     data = bt.feeds.PandasData(dataname=df)
